@@ -1,65 +1,64 @@
-import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
-import AppLogo from '@/components/app-logo';
-import { NavFooter } from '@/components/nav-footer';
-import { NavMain } from '@/components/nav-main';
-import { NavUser } from '@/components/nav-user';
-import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-} from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
-import type { NavItem } from '@/types';
+import { router, usePage } from '@inertiajs/react';
+import { useCallback, useMemo } from 'react';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
+import { MedicalSidebar } from '@/components/medical-sidebar';
+import { dashboard, logout } from '@/routes';
+import { edit as editProfile } from '@/routes/profile';
 
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: FolderGit2,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
-];
+// Maps sidebar nav keys → real Inertia routes (where they exist).
+// Keys not listed here are visual-only for now.
+const ROUTE_MAP: Record<string, string> = {
+    dashboard: dashboard().url,
+    settings: editProfile().url,
+};
+
+function getInitials(name: string): string {
+    return name
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase() ?? '')
+        .join('') || '?';
+}
 
 export function AppSidebar() {
+    const { auth, url } = usePage().props as unknown as {
+        auth: { user: { name: string; email: string } | null };
+        url?: string;
+    };
+    const currentUrl = usePage().url;
+
+    // Derive the active sidebar key from the current URL.
+    const activeKey = useMemo(() => {
+        const match = Object.entries(ROUTE_MAP).find(([, href]) =>
+            currentUrl.startsWith(href),
+        );
+        return match?.[0] ?? 'dashboard';
+    }, [currentUrl]);
+
+    const handleNavigate = useCallback((key: string) => {
+        if (key === 'logout') {
+            router.visit(logout().url, { method: 'post' });
+            return;
+        }
+        const href = ROUTE_MAP[key];
+        if (href) router.visit(href);
+    }, []);
+
+    const doctor = auth.user
+        ? {
+              name: auth.user.name,
+              specialty: 'Praticien',
+              initials: getInitials(auth.user.name),
+              onDuty: true,
+          }
+        : undefined;
+
     return (
-        <Sidebar collapsible="icon" variant="inset">
-            <SidebarHeader>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
-                                <AppLogo />
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
-            </SidebarHeader>
-
-            <SidebarContent>
-                <NavMain items={mainNavItems} />
-            </SidebarContent>
-
-            <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
-                <NavUser />
-            </SidebarFooter>
-        </Sidebar>
+        <MedicalSidebar
+            activeKey={activeKey}
+            onNavigate={handleNavigate}
+            doctor={doctor}
+        />
     );
 }
