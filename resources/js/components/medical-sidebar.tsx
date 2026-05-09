@@ -121,7 +121,7 @@ export function MedicalSidebar({
             <aside
                 aria-label="Navigation principale"
                 className={cn(
-                    'flex h-screen flex-col border-r border-slate-200 bg-white text-slate-700',
+                    'sticky top-0 z-10 flex h-screen flex-col border-r border-slate-200 bg-white text-slate-700',
                     'transition-[width] duration-200 ease-out',
                     collapsed ? 'w-[72px]' : 'w-72',
                     className,
@@ -301,7 +301,7 @@ function NavButton({ item, active, collapsed, onClick, variant = 'default' }: Na
             aria-label={label}
             aria-current={active ? 'page' : undefined}
             className={cn(
-                'group relative flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium outline-none',
+                'group relative flex w-full cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm font-medium outline-none',
                 'transition-colors duration-150 ease-out',
                 'focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1',
                 collapsed && 'justify-center px-2',

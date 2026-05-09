@@ -1,4 +1,4 @@
-import { Head, router, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { type FormEvent } from 'react';
 import { toast } from 'sonner';
@@ -73,10 +73,10 @@ export default function PatientShow({ patient }: Props) {
 
             <div className="mx-auto max-w-5xl space-y-6 p-6">
                 <Button asChild variant="ghost" size="sm">
-                    <a href="/patients">
+                    <Link href="/patients">
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Retour
-                    </a>
+                    </Link>
                 </Button>
 
                 {/* Carte infos personnelles */}

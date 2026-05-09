@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Upload } from 'lucide-react';
 import { useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { toast } from 'sonner';
@@ -82,10 +82,10 @@ export default function CreatePatient({ medecins }: Props) {
 
             <div className="mx-auto max-w-3xl space-y-6 p-6">
                 <Button asChild variant="ghost" size="sm">
-                    <a href="/patients">
+                    <Link href="/patients">
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Retour
-                    </a>
+                    </Link>
                 </Button>
 
                 <div>
@@ -207,7 +207,7 @@ export default function CreatePatient({ medecins }: Props) {
 
                     <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
                         <Button type="button" variant="ghost" asChild>
-                            <a href="/patients">Annuler</a>
+                            <Link href="/patients">Annuler</Link>
                         </Button>
                         <Button type="submit" disabled={processing}>
                             {processing ? 'Enregistrement…' : 'Créer le patient'}
