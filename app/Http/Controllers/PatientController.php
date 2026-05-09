@@ -6,7 +6,6 @@ use App\Http\Requests\PatientRequest;
 use App\Http\Resources\PatientResource;
 use App\Models\Allergie;
 use App\Models\Patient;
-use App\Models\PatientContactUrgence;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -60,6 +59,9 @@ class PatientController extends Controller
             'patients' => PatientResource::collection($patients),
             'filters' => $request->only(['search', 'sexe', 'statut', 'medecin_id']),
             'medecins' => User::where('role', 'medecin')->get(['id', 'name']),
+            'breadcrumbs' => [
+                ['title' => 'Patients', 'href' => route('patients.index')],
+            ],
         ]);
     }
 
@@ -69,6 +71,10 @@ class PatientController extends Controller
 
         return Inertia::render('patients/create', [
             'medecins' => User::where('role', 'medecin')->get(['id', 'name']),
+            'breadcrumbs' => [
+                ['title' => 'Patients', 'href' => route('patients.index')],
+                ['title' => 'Nouveau patient', 'href' => route('patients.create')],
+            ],
         ]);
     }
 
@@ -96,6 +102,10 @@ class PatientController extends Controller
 
         return Inertia::render('patients/show', [
             'patient' => new PatientResource($patient),
+            'breadcrumbs' => [
+                ['title' => 'Patients', 'href' => route('patients.index')],
+                ['title' => trim($patient->prenom.' '.$patient->nom), 'href' => route('patients.show', $patient)],
+            ],
         ]);
     }
 
