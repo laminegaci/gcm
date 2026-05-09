@@ -57,7 +57,7 @@ export default function PatientsIndex({ patients, filters }: Props) {
     }, [search, filters.search]);
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Patients', href: '/patients' }]}>
+            <>            
             <Head title="Patients" />
 
             <div className="space-y-6 p-6">
@@ -168,6 +168,6 @@ export default function PatientsIndex({ patients, filters }: Props) {
                     </div>
                 )}
             </div>
-        </AppLayout>
+            </>
     );
 }

@@ -77,13 +77,8 @@ export default function CreatePatient({ medecins }: Props) {
     };
 
     return (
-        <AppLayout
-            breadcrumbs={[
-                { title: 'Patients', href: '/patients' },
-                { title: 'Nouveau', href: '/patients/create' },
-            ]}
-        >
-            <Head title="Nouveau patient" />
+        <>
+                    <Head title="Nouveau patient" />
 
             <div className="mx-auto max-w-3xl space-y-6 p-6">
                 <Button asChild variant="ghost" size="sm">
@@ -220,7 +215,7 @@ export default function CreatePatient({ medecins }: Props) {
                     </div>
                 </form>
             </div>
-        </AppLayout>
+        </>
     );
 }
 

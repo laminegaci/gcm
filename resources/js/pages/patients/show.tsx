@@ -68,13 +68,8 @@ export default function PatientShow({ patient }: Props) {
     const contact = p.contacts_urgence?.[0];
 
     return (
-        <AppLayout
-            breadcrumbs={[
-                { title: 'Patients', href: '/patients' },
-                { title: p.nom_complet, href: `/patients/${p.id}` },
-            ]}
-        >
-            <Head title={p.nom_complet} />
+        <>
+        <Head title={p.nom_complet} />
 
             <div className="mx-auto max-w-5xl space-y-6 p-6">
                 <Button asChild variant="ghost" size="sm">
@@ -137,7 +132,7 @@ export default function PatientShow({ patient }: Props) {
                     </CardContent>
                 </Card>
             </div>
-        </AppLayout>
+        </>
     );
 }
 
