@@ -1,6 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Bell, PanelLeftClose, PanelLeftOpen, Plus, Search } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { Bell, Languages, Maximize, Minimize, Moon, PanelLeftClose, PanelLeftOpen, Plus, Search, Sun } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { AppSidebar } from '@/components/app-sidebar';
 import { Breadcrumbs } from '@/components/breadcrumbs';
@@ -19,6 +19,7 @@ import {
     TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { UserMenuContent } from '@/components/user-menu-content';
+import { useAppearance } from '@/hooks/use-appearance';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import patients from '@/routes/patients';
@@ -30,8 +31,35 @@ export default function AppSidebarLayout({
 }: AppLayoutProps) {
     const { auth } = usePage().props as { auth?: { user?: { name: string; email: string; avatar?: string } } };
     const getInitials = useInitials();
+    const { appearance, resolvedAppearance, updateAppearance } = useAppearance();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [searchFocused, setSearchFocused] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
+    useEffect(() => {
+        const handler = () => setIsFullscreen(!!document.fullscreenElement);
+
+        document.addEventListener('fullscreenchange', handler);
+
+        return () => document.removeEventListener('fullscreenchange', handler);
+    }, []);
+
+    const toggleFullscreen = useCallback(() => {
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        } else {
+            document.documentElement.requestFullscreen();
+        }
+    }, []);
+
+    const cycleAppearance = useCallback(() => {
+        const next: Record<string, 'light' | 'dark' | 'system'> = {
+            light: 'dark',
+            dark: 'system',
+            system: 'light',
+        };
+        updateAppearance(next[appearance]);
+    }, [appearance, updateAppearance]);
 
     const toggleSidebar = useCallback(() => {
         setSidebarCollapsed((c) => !c);
@@ -128,6 +156,64 @@ export default function AppSidebarLayout({
                                 </TooltipTrigger>
                                 <TooltipContent side="bottom">
                                     <p>Notifications</p>
+                                </TooltipContent>
+                            </Tooltip>
+
+                            {/* Dark mode */}
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={cycleAppearance}
+                                        className="h-9 w-9 text-slate-500 hover:bg-violet-50 hover:text-violet-600"
+                                    >
+                                        {resolvedAppearance === 'dark' ? (
+                                            <Moon className="h-4 w-4" />
+                                        ) : (
+                                            <Sun className="h-4 w-4" />
+                                        )}
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                    <p>{appearance === 'dark' ? 'Mode sombre' : appearance === 'light' ? 'Mode clair' : 'Mode système'} · Cliquer pour changer</p>
+                                </TooltipContent>
+                            </Tooltip>
+
+                            {/* Full screen */}
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={toggleFullscreen}
+                                        className="h-9 w-9 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+                                    >
+                                        {isFullscreen ? (
+                                            <Minimize className="h-4 w-4" />
+                                        ) : (
+                                            <Maximize className="h-4 w-4" />
+                                        )}
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                    <p>{isFullscreen ? 'Quitter le plein écran' : 'Plein écran'}</p>
+                                </TooltipContent>
+                            </Tooltip>
+
+                            {/* Language */}
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-9 w-9 text-slate-500 hover:bg-sky-50 hover:text-sky-600"
+                                    >
+                                        <Languages className="h-4 w-4" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                    <p>FR · Français</p>
                                 </TooltipContent>
                             </Tooltip>
                         </div>
