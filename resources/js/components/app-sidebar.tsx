@@ -23,15 +23,18 @@ function getInitials(name: string): string {
         .join('') || '?';
 }
 
-export function AppSidebar() {
+interface AppSidebarProps {
+    collapsed?: boolean;
+    onToggleCollapse?: () => void;
+}
+
+export function AppSidebar({ collapsed, onToggleCollapse }: AppSidebarProps = {}) {
     const { auth } = usePage().props as unknown as {
         auth: { user: { name: string; email: string } | null };
     };
     const currentUrl = usePage().url;
 
-    // Derive the active sidebar key from the current URL.
     const activeKey = useMemo(() => {
-        // Patient sub-pages (create, show, etc.) should highlight "Patients"
         if (currentUrl.startsWith('/patients')) {
             return 'patients';
         }
@@ -71,6 +74,8 @@ export function AppSidebar() {
             activeKey={activeKey}
             onNavigate={handleNavigate}
             doctor={doctor}
+            collapsed={collapsed}
+            onToggleCollapse={onToggleCollapse}
         />
     );
 }

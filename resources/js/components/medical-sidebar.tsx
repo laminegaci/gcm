@@ -54,6 +54,8 @@ interface MedicalSidebarProps {
     doctor?: DoctorProfile;
     facilityName?: string;
     appVersion?: string;
+    collapsed?: boolean;
+    onToggleCollapse?: () => void;
     defaultCollapsed?: boolean;
     className?: string;
 }
@@ -99,11 +101,15 @@ export function MedicalSidebar({
     doctor = DEFAULT_DOCTOR,
     facilityName = 'Clinique Saint-Michel',
     appVersion = 'v1.4.2',
+    collapsed: controlledCollapsed,
+    onToggleCollapse,
     defaultCollapsed = false,
     className,
 }: MedicalSidebarProps) {
-    const [collapsed, setCollapsed] = useState(defaultCollapsed);
+    const [internalCollapsed, setInternalCollapsed] = useState(defaultCollapsed);
     const [internalActive, setInternalActive] = useState('dashboard');
+
+    const collapsed = controlledCollapsed ?? internalCollapsed;
     const activeKey = controlledActiveKey ?? internalActive;
 
     const handleNavigate = useCallback(
@@ -114,7 +120,13 @@ export function MedicalSidebar({
         [controlledActiveKey, onNavigate],
     );
 
-    const toggleCollapsed = useCallback(() => setCollapsed((c) => !c), []);
+    const toggleCollapsed = useCallback(() => {
+        if (onToggleCollapse) {
+            onToggleCollapse();
+        } else {
+            setInternalCollapsed((c) => !c);
+        }
+    }, [onToggleCollapse]);
 
     return (
         <TooltipProvider delayDuration={150}>
@@ -141,7 +153,7 @@ export function MedicalSidebar({
                             <p className="truncate text-xs text-slate-500">Espace praticien</p>
                         </div>
                     )}
-                    <Button
+                    {/* <Button
                         type="button"
                         size="icon"
                         variant="ghost"
@@ -151,7 +163,7 @@ export function MedicalSidebar({
                         className="h-8 w-8 shrink-0 text-slate-500 hover:text-slate-900"
                     >
                         <ChevronLeft className={cn('h-4 w-4 transition-transform duration-200', collapsed && 'rotate-180')} />
-                    </Button>
+                    </Button> */}
                 </div>
 
                 {/* Doctor profile */}
