@@ -67,7 +67,7 @@ export default function AppSidebarLayout({
 
     return (
         <TooltipProvider delayDuration={150}>
-            <div className="flex min-h-screen w-full bg-ocean-sand dark:bg-background">
+            <div className="flex min-h-screen w-full dark:bg-background">
                 <AppSidebar
                     collapsed={sidebarCollapsed}
                 />
