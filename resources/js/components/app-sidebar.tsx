@@ -25,10 +25,9 @@ function getInitials(name: string): string {
 
 interface AppSidebarProps {
     collapsed?: boolean;
-    onToggleCollapse?: () => void;
 }
 
-export function AppSidebar({ collapsed, onToggleCollapse }: AppSidebarProps = {}) {
+export function AppSidebar({ collapsed }: AppSidebarProps = {}) {
     const { auth } = usePage().props as unknown as {
         auth: { user: { name: string; email: string } | null };
     };
@@ -75,7 +74,6 @@ export function AppSidebar({ collapsed, onToggleCollapse }: AppSidebarProps = {}
             onNavigate={handleNavigate}
             doctor={doctor}
             collapsed={collapsed}
-            onToggleCollapse={onToggleCollapse}
         />
     );
 }
