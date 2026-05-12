@@ -102,6 +102,41 @@ The app uses a custom layout resolver in `resources/js/app.tsx`:
 - `settings/*` pages → `[AppLayout, SettingsLayout]`
 - All others → `AppLayout`
 
+### Authorization
+
+- User roles are stored in `users.role`: `admin`, `medecin`, `secretaire` (see migration `2026_05_07_100000_add_role_to_users_table.php`)
+- Policies live in `app/Policies/` and are **auto-discovered** (no manual registration) — class name must match `App\Policies\{Model}Policy`
+- Controllers call `$this->authorize('action', $modelOrClass)`; the base `Controller` already uses `AuthorizesRequests`
+- Field-level authorization on update is done at the controller level (see `PatientController::filterFieldsForRole`), while the policy only authorizes the *action*. Roles often have different writable column sets — keep that filter pattern when adding similar resources.
+
+### Sidebar Navigation
+
+The sidebar is two layers:
+- `components/medical-sidebar.tsx` — pure UI; nav items are keyed by string (`dashboard`, `patients`, `prescriptions`, …) in `PRIMARY_NAV` / `EMERGENCY_NAV`
+- `components/app-sidebar.tsx` — wires those keys to URLs via `ROUTE_MAP` (using Wayfinder helpers) and computes `activeKey` from `usePage().url`
+
+To add an entry: add `{ key, label, icon }` to the relevant section in `medical-sidebar.tsx`, then add `key: routeHelper.index().url` to `ROUTE_MAP` and extend the `activeKey` URL-prefix matching in `app-sidebar.tsx`.
+
+### PDF Generation
+
+- Uses `barryvdh/laravel-dompdf` — facade `Barryvdh\DomPDF\Facade\Pdf`
+- Blade templates live in `resources/views/pdf/`
+- Pattern: `Pdf::loadView('pdf.xxx', [...])->setPaper('a5', 'portrait')->stream($filename)`
+- Use inline CSS, `DejaVu Sans` for Unicode glyphs, and `position: fixed` for headers/footers
+
+### Flash messages / toasts
+
+Controllers attach toast data via session flash on the redirect:
+```php
+return to_route('xxx.show', $model)
+    ->with('toast', ['type' => 'success', 'message' => '...']);
+```
+`back()->with('toast', ...)` works the same way. The frontend renders these via `sonner` (`<Toaster />` in `app.tsx`) reading shared Inertia props.
+
+### Dates / Carbon
+
+`AppServiceProvider` calls `Date::use(CarbonImmutable::class)`. All date-cast model attributes return `CarbonImmutable`. When parsing user input, use `Carbon::parse(...)` (returns mutable) or `CarbonImmutable::parse(...)` deliberately — don't rely on `$model->date_field` being mutable.
+
 ### React 19 + React Compiler
 
 This project uses React 19 with the React Compiler (babel-plugin-react-compiler). Do not use `useMemo` or `useCallback` — the compiler handles optimization automatically.
