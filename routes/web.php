@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\PrescriptionController;
+use App\Http\Controllers\PrescriptionPdfController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -21,6 +23,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('patients.allergies.destroy');
     Route::post('patients/{patient}/contact-urgence', [PatientController::class, 'upsertContactUrgence'])
         ->name('patients.contact-urgence.upsert');
+
+    // Prescriptions (ordonnances)
+    Route::resource('prescriptions', PrescriptionController::class);
+    Route::post('prescriptions/{prescription}/duplicate', [PrescriptionController::class, 'duplicate'])
+        ->name('prescriptions.duplicate');
+    Route::get('prescriptions/{prescription}/pdf', [PrescriptionPdfController::class, 'show'])
+        ->name('prescriptions.pdf');
+    Route::get('patients/{patient}/prescriptions', function (\App\Models\Patient $patient) {
+        return redirect()->route('prescriptions.index', ['patient_id' => $patient->id]);
+    })->name('patients.prescriptions.index');
 });
 
 require __DIR__.'/settings.php';

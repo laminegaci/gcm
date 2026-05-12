@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\MedicamentFavoriController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\PrescriptionController;
+use App\Http\Controllers\PrescriptionPdfController;
 use App\Http\Resources\PatientResource;
 use App\Models\Patient;
 use Illuminate\Http\Request;
@@ -47,4 +50,24 @@ Route::middleware('auth')->group(function () {
             'update' => 'api.patients.update',
             'destroy' => 'api.patients.destroy',
         ]);
+
+    // Prescriptions
+    Route::apiResource('prescriptions', PrescriptionController::class)
+        ->names([
+            'index' => 'api.prescriptions.index',
+            'store' => 'api.prescriptions.store',
+            'show' => 'api.prescriptions.show',
+            'update' => 'api.prescriptions.update',
+            'destroy' => 'api.prescriptions.destroy',
+        ]);
+    Route::get('prescriptions/{prescription}/pdf', [PrescriptionPdfController::class, 'show'])
+        ->name('api.prescriptions.pdf');
+
+    // Médicaments favoris
+    Route::get('medicaments-favoris', [MedicamentFavoriController::class, 'index'])
+        ->name('api.medicaments-favoris.index');
+    Route::post('medicaments-favoris', [MedicamentFavoriController::class, 'store'])
+        ->name('api.medicaments-favoris.store');
+    Route::delete('medicaments-favoris/{favori}', [MedicamentFavoriController::class, 'destroy'])
+        ->name('api.medicaments-favoris.destroy');
 });
