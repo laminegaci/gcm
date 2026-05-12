@@ -1,5 +1,16 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Bell, Languages, Maximize, Minimize, Moon, PanelLeftClose, PanelLeftOpen, Plus, Search, Sun } from 'lucide-react';
+import {
+    Bell,
+    Languages,
+    Maximize,
+    Minimize,
+    Moon,
+    PanelLeftClose,
+    PanelLeftOpen,
+    Plus,
+    Search,
+    Sun,
+} from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { AppSidebar } from '@/components/app-sidebar';
@@ -29,9 +40,12 @@ export default function AppSidebarLayout({
     children,
     breadcrumbs = [],
 }: AppLayoutProps) {
-    const { auth } = usePage().props as { auth?: { user?: { name: string; email: string; avatar?: string } } };
+    const { auth } = usePage().props as {
+        auth?: { user?: { name: string; email: string; avatar?: string } };
+    };
     const getInitials = useInitials();
-    const { appearance, resolvedAppearance, updateAppearance } = useAppearance();
+    const { appearance, resolvedAppearance, updateAppearance } =
+        useAppearance();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [searchFocused, setSearchFocused] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
@@ -68,11 +82,9 @@ export default function AppSidebarLayout({
     return (
         <TooltipProvider delayDuration={150}>
             <div className="flex min-h-screen w-full dark:bg-background">
-                <AppSidebar
-                    collapsed={sidebarCollapsed}
-                />
+                <AppSidebar collapsed={sidebarCollapsed} />
                 <div className="flex min-w-0 flex-1 flex-col">
-                    <header className="flex h-16 shrink-0 items-center gap-3 border-b border-ocean-aqua/40 bg-white/80 backdrop-blur-md dark:border-sidebar-border dark:bg-background/80 px-4 md:px-6">
+                    <header className="flex h-16 shrink-0 items-center gap-3 border-b border-ocean-aqua/40 bg-white/80 px-4 backdrop-blur-md md:px-6 dark:border-sidebar-border dark:bg-background/80">
                         {/* Sidebar toggle */}
                         <Tooltip>
                             <TooltipTrigger asChild>
@@ -80,7 +92,11 @@ export default function AppSidebarLayout({
                                     variant="ghost"
                                     size="icon"
                                     onClick={toggleSidebar}
-                                    aria-label={sidebarCollapsed ? 'Ouvrir la barre latérale' : 'Fermer la barre latérale'}
+                                    aria-label={
+                                        sidebarCollapsed
+                                            ? 'Ouvrir la barre latérale'
+                                            : 'Fermer la barre latérale'
+                                    }
                                     className="hidden h-9 w-9 shrink-0 text-slate-500 hover:bg-ocean-aqua/30 hover:text-ocean-deep lg:inline-flex"
                                 >
                                     {sidebarCollapsed ? (
@@ -91,7 +107,10 @@ export default function AppSidebarLayout({
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent side="bottom">
-                                <p>{sidebarCollapsed ? 'Ouvrir' : 'Fermer'} la barre latérale</p>
+                                <p>
+                                    {sidebarCollapsed ? 'Ouvrir' : 'Fermer'} la
+                                    barre latérale
+                                </p>
                             </TooltipContent>
                         </Tooltip>
 
@@ -102,10 +121,14 @@ export default function AppSidebarLayout({
 
                         {/* Search */}
                         <div className="relative hidden sm:block">
-                            <Search className={cn(
-                                'pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 transition-colors',
-                                searchFocused ? 'text-ocean-teal' : 'text-ocean-teal/50',
-                            )} />
+                            <Search
+                                className={cn(
+                                    'pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 transition-colors',
+                                    searchFocused
+                                        ? 'text-ocean-teal'
+                                        : 'text-ocean-teal/50',
+                                )}
+                            />
                             <Input
                                 placeholder="Rechercher un patient..."
                                 onFocus={() => setSearchFocused(true)}
@@ -113,7 +136,8 @@ export default function AppSidebarLayout({
                                 className={cn(
                                     'h-9 w-48 rounded-lg border-ocean-aqua/60 bg-ocean-sand/50 pl-8 text-sm transition-all duration-200 focus:w-72',
                                     'placeholder:text-slate-400',
-                                    searchFocused && 'border-ocean-teal ring-2 ring-ocean-teal/20',
+                                    searchFocused &&
+                                        'border-ocean-teal ring-2 ring-ocean-teal/20',
                                 )}
                             />
                         </div>
@@ -148,7 +172,7 @@ export default function AppSidebarLayout({
                                         className="relative h-9 w-9 text-slate-500 hover:bg-ocean-coral/10 hover:text-ocean-coral"
                                     >
                                         <Bell className="h-4 w-4" />
-                                        <span className="absolute right-1.5 top-1.5 flex h-2 w-2">
+                                        <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
                                             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ocean-coral/60" />
                                             <span className="relative inline-flex h-2 w-2 rounded-full bg-ocean-coral" />
                                         </span>
@@ -176,7 +200,14 @@ export default function AppSidebarLayout({
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent side="bottom">
-                                    <p>{appearance === 'dark' ? 'Mode sombre' : appearance === 'light' ? 'Mode clair' : 'Mode système'} · Cliquer pour changer</p>
+                                    <p>
+                                        {appearance === 'dark'
+                                            ? 'Mode sombre'
+                                            : appearance === 'light'
+                                              ? 'Mode clair'
+                                              : 'Mode système'}{' '}
+                                        · Cliquer pour changer
+                                    </p>
                                 </TooltipContent>
                             </Tooltip>
 
@@ -197,7 +228,11 @@ export default function AppSidebarLayout({
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent side="bottom">
-                                    <p>{isFullscreen ? 'Quitter le plein écran' : 'Plein écran'}</p>
+                                    <p>
+                                        {isFullscreen
+                                            ? 'Quitter le plein écran'
+                                            : 'Plein écran'}
+                                    </p>
                                 </TooltipContent>
                             </Tooltip>
 
@@ -234,10 +269,12 @@ export default function AppSidebarLayout({
                                             alt={auth?.user?.name}
                                         />
                                         <AvatarFallback className="bg-gradient-to-br from-ocean-teal to-ocean-deep text-xs font-medium text-white">
-                                            {getInitials(auth?.user?.name ?? '')}
+                                            {getInitials(
+                                                auth?.user?.name ?? '',
+                                            )}
                                         </AvatarFallback>
                                     </Avatar>
-                                    <span className="hidden text-sm font-medium text-ocean-deep dark:text-sidebar-foreground md:inline">
+                                    <span className="hidden text-sm font-medium text-ocean-deep md:inline dark:text-sidebar-foreground">
                                         {auth?.user?.name}
                                     </span>
                                 </Button>

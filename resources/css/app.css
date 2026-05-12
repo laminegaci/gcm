@@ -19,12 +19,12 @@
     --radius-sm: calc(var(--radius) - 4px);
 
     /* Ocean Breeze palette */
-    --color-ocean-deep: #0F4C75;
-    --color-ocean-teal: #3282B8;
-    --color-ocean-aqua: #BBE1FA;
-    --color-ocean-seafoam: #A8DADC;
-    --color-ocean-sand: #F1FAEE;
-    --color-ocean-coral: #FF6B6B;
+    --color-ocean-deep: #0f4c75;
+    --color-ocean-teal: #3282b8;
+    --color-ocean-aqua: #bbe1fa;
+    --color-ocean-seafoam: #a8dadc;
+    --color-ocean-sand: #f1faee;
+    --color-ocean-coral: #ff6b6b;
 
     /* Semantic aliases */
     --color-background: var(--background);
@@ -80,11 +80,11 @@
     --radius: 0.75rem;
 
     /* Base */
-    --background: oklch(100% 0.00011 271.152);       /* Sand Beige #F1FAEE */
-    --foreground: oklch(0.28 0.09 260);         /* Deep Ocean Blue (#0F4C75) */
+    --background: oklch(100% 0.00011 271.152); /* Sand Beige #F1FAEE */
+    --foreground: oklch(0.28 0.09 260); /* Deep Ocean Blue (#0F4C75) */
 
     /* Card */
-    --card: oklch(0.995 0.002 120);             /* near-white card */
+    --card: oklch(0.995 0.002 120); /* near-white card */
     --card-foreground: oklch(0.28 0.09 260);
 
     /* Popover (dropdowns, modals) */
@@ -92,46 +92,46 @@
     --popover-foreground: oklch(0.28 0.09 260);
 
     /* Primary — Deep Ocean Blue */
-    --primary: oklch(0.35 0.12 260);            /* #0F4C75 */
+    --primary: oklch(0.35 0.12 260); /* #0F4C75 */
     --primary-foreground: oklch(0.98 0 0);
 
     /* Secondary — Ocean Teal */
-    --secondary: oklch(0.55 0.13 245);          /* #3282B8 */
+    --secondary: oklch(0.55 0.13 245); /* #3282B8 */
     --secondary-foreground: oklch(0.98 0 0);
 
     /* Muted — Soft Aqua tint */
-    --muted: oklch(0.88 0.04 230);              /* light aqua */
+    --muted: oklch(0.88 0.04 230); /* light aqua */
     --muted-foreground: oklch(0.5 0.06 250);
 
     /* Accent — Soft Aqua */
-    --accent: oklch(0.85 0.05 235);             /* #BBE1FA */
-    --accent-foreground: oklch(0.28 0.09 260);  /* Deep Ocean Blue */
+    --accent: oklch(0.85 0.05 235); /* #BBE1FA */
+    --accent-foreground: oklch(0.28 0.09 260); /* Deep Ocean Blue */
 
     /* Destructive — Coral */
-    --destructive: oklch(0.65 0.2 25);          /* #FF6B6B */
+    --destructive: oklch(0.65 0.2 25); /* #FF6B6B */
     --destructive-foreground: oklch(0.98 0 0);
 
     /* Borders & Inputs */
-    --border: oklch(0.82 0.03 235);             /* soft aqua border */
+    --border: oklch(0.82 0.03 235); /* soft aqua border */
     --input: oklch(0.82 0.03 235);
-    --ring: oklch(0.5 0.14 245);                /* Ocean Teal focus ring */
+    --ring: oklch(0.5 0.14 245); /* Ocean Teal focus ring */
 
     /* Charts */
-    --chart-1: oklch(0.55 0.14 245);            /* Ocean Teal */
-    --chart-2: oklch(0.35 0.12 260);            /* Deep Ocean Blue */
-    --chart-3: oklch(0.65 0.2 25);              /* Coral */
-    --chart-4: oklch(0.85 0.05 190);            /* Seafoam Green */
-    --chart-5: oklch(0.85 0.05 235);            /* Soft Aqua */
+    --chart-1: oklch(0.55 0.14 245); /* Ocean Teal */
+    --chart-2: oklch(0.35 0.12 260); /* Deep Ocean Blue */
+    --chart-3: oklch(0.65 0.2 25); /* Coral */
+    --chart-4: oklch(0.85 0.05 190); /* Seafoam Green */
+    --chart-5: oklch(0.85 0.05 235); /* Soft Aqua */
 
     /* ---- Sidebar — Dark Ocean ---- */
-    --sidebar: oklch(0.22 0.07 260);            /* Deep Ocean Blue dark */
-    --sidebar-foreground: oklch(0.9 0.02 240);  /* soft white-aqua */
-    --sidebar-primary: oklch(0.55 0.14 245);    /* Ocean Teal */
+    --sidebar: oklch(0.22 0.07 260); /* Deep Ocean Blue dark */
+    --sidebar-foreground: oklch(0.9 0.02 240); /* soft white-aqua */
+    --sidebar-primary: oklch(0.55 0.14 245); /* Ocean Teal */
     --sidebar-primary-foreground: oklch(0.98 0 0);
-    --sidebar-accent: oklch(0.3 0.08 260);      /* hover highlight */
+    --sidebar-accent: oklch(0.3 0.08 260); /* hover highlight */
     --sidebar-accent-foreground: oklch(0.9 0.02 240);
-    --sidebar-border: oklch(0.28 0.07 260);     /* slightly lighter than sidebar */
-    --sidebar-ring: oklch(0.5 0.14 245);         /* Ocean Teal */
+    --sidebar-border: oklch(0.28 0.07 260); /* slightly lighter than sidebar */
+    --sidebar-ring: oklch(0.5 0.14 245); /* Ocean Teal */
 }
 
 /*
@@ -141,8 +141,8 @@
  */
 .dark {
     /* Base — deep navy */
-    --background: oklch(0.14 0.035 260);        /* near #0A1628 */
-    --foreground: oklch(0.88 0.03 240);         /* soft white-aqua */
+    --background: oklch(0.14 0.035 260); /* near #0A1628 */
+    --foreground: oklch(0.88 0.03 240); /* soft white-aqua */
 
     /* Card */
     --card: oklch(0.18 0.04 260);
@@ -153,7 +153,7 @@
     --popover-foreground: oklch(0.88 0.03 240);
 
     /* Primary — Ocean Teal (brighter on dark) */
-    --primary: oklch(0.55 0.14 245);            /* #3282B8 */
+    --primary: oklch(0.55 0.14 245); /* #3282B8 */
     --primary-foreground: oklch(0.98 0 0);
 
     /* Secondary — Soft Aqua */
@@ -175,19 +175,19 @@
     /* Borders */
     --border: oklch(0.25 0.05 260);
     --input: oklch(0.25 0.05 260);
-    --ring: oklch(0.5 0.14 245);                /* Ocean Teal */
+    --ring: oklch(0.5 0.14 245); /* Ocean Teal */
 
     /* Charts */
-    --chart-1: oklch(0.5 0.14 245);             /* Ocean Teal */
-    --chart-2: oklch(0.7 0.18 25);              /* Coral */
-    --chart-3: oklch(0.85 0.05 190);            /* Seafoam */
-    --chart-4: oklch(0.45 0.12 260);            /* Deep Blue */
-    --chart-5: oklch(0.8 0.05 235);             /* Soft Aqua */
+    --chart-1: oklch(0.5 0.14 245); /* Ocean Teal */
+    --chart-2: oklch(0.7 0.18 25); /* Coral */
+    --chart-3: oklch(0.85 0.05 190); /* Seafoam */
+    --chart-4: oklch(0.45 0.12 260); /* Deep Blue */
+    --chart-5: oklch(0.8 0.05 235); /* Soft Aqua */
 
     /* Sidebar — slightly lighter than background */
     --sidebar: oklch(0.17 0.04 260);
     --sidebar-foreground: oklch(0.88 0.03 240);
-    --sidebar-primary: oklch(0.5 0.14 245);     /* Ocean Teal */
+    --sidebar-primary: oklch(0.5 0.14 245); /* Ocean Teal */
     --sidebar-primary-foreground: oklch(0.98 0 0);
     --sidebar-accent: oklch(0.25 0.06 260);
     --sidebar-accent-foreground: oklch(0.88 0.03 240);

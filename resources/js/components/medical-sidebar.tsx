@@ -16,7 +16,12 @@ import { useCallback, useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
 type NavTone = 'default' | 'critical';
@@ -61,9 +66,20 @@ const PRIMARY_NAV: NavSection = {
     items: [
         { key: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard },
         { key: 'patients', label: 'Patients', icon: Users },
-        { key: 'appointments', label: 'Rendez-vous', icon: CalendarDays, badge: 4 },
+        {
+            key: 'appointments',
+            label: 'Rendez-vous',
+            icon: CalendarDays,
+            badge: 4,
+        },
+        { key: 'consultations', label: 'Consultations', icon: Stethoscope },
         { key: 'prescriptions', label: 'Ordonnances', icon: FileText },
-        { key: 'lab-results', label: "Résultats d'examens", icon: FlaskConical, badge: 2 },
+        {
+            key: 'lab-results',
+            label: "Résultats d'examens",
+            icon: FlaskConical,
+            badge: 2,
+        },
         { key: 'messages', label: 'Messagerie', icon: MessageSquare, badge: 7 },
     ],
 };
@@ -73,8 +89,20 @@ const EMERGENCY_NAV: NavSection = {
     title: 'Urgences',
     tone: 'critical',
     items: [
-        { key: 'alerts', label: 'Alertes actives', icon: AlertTriangle, badge: 3, tone: 'critical' },
-        { key: 'critical-patients', label: 'Patients critiques', icon: Activity, badge: 1, tone: 'critical' },
+        {
+            key: 'alerts',
+            label: 'Alertes actives',
+            icon: AlertTriangle,
+            badge: 3,
+            tone: 'critical',
+        },
+        {
+            key: 'critical-patients',
+            label: 'Patients critiques',
+            icon: Activity,
+            badge: 1,
+            tone: 'critical',
+        },
     ],
 };
 
@@ -108,8 +136,8 @@ export function MedicalSidebar({
     const handleNavigate = useCallback(
         (key: string) => {
             if (controlledActiveKey === undefined) {
-setInternalActive(key);
-}
+                setInternalActive(key);
+            }
 
             onNavigate?.(key);
         },
@@ -122,7 +150,7 @@ setInternalActive(key);
                 aria-label="Navigation principale"
                 className={cn(
                     'sticky top-0 z-10 flex h-screen flex-col',
-                    'bg-sidebar text-sidebar-foreground border-r border-sidebar-border',
+                    'border-r border-sidebar-border bg-sidebar text-sidebar-foreground',
                     'transition-[width] duration-200 ease-out',
                     collapsed ? 'w-[72px]' : 'w-72',
                     className,
@@ -149,20 +177,34 @@ setInternalActive(key);
                 </div>
 
                 {/* Doctor profile */}
-                <div className={cn('flex items-center gap-3 px-4 py-4', collapsed && 'justify-center px-2')}>
+                <div
+                    className={cn(
+                        'flex items-center gap-3 px-4 py-4',
+                        collapsed && 'justify-center px-2',
+                    )}
+                >
                     <div className="relative shrink-0">
                         <Avatar className="h-10 w-10 ring-2 ring-sidebar-border">
-                            {doctor.avatarUrl && <AvatarImage src={doctor.avatarUrl} alt={doctor.name} />}
+                            {doctor.avatarUrl && (
+                                <AvatarImage
+                                    src={doctor.avatarUrl}
+                                    alt={doctor.name}
+                                />
+                            )}
                             <AvatarFallback className="bg-ocean-teal/20 text-sm font-medium text-ocean-aqua">
                                 {doctor.initials}
                             </AvatarFallback>
                         </Avatar>
                         <span
                             className={cn(
-                                'absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full ring-2 ring-sidebar',
-                                doctor.onDuty ? 'bg-emerald-400' : 'bg-slate-500',
+                                'absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full ring-2 ring-sidebar',
+                                doctor.onDuty
+                                    ? 'bg-emerald-400'
+                                    : 'bg-slate-500',
                             )}
-                            aria-label={doctor.onDuty ? 'En service' : 'Hors service'}
+                            aria-label={
+                                doctor.onDuty ? 'En service' : 'Hors service'
+                            }
                         />
                     </div>
                     {!collapsed && (
@@ -175,14 +217,18 @@ setInternalActive(key);
                             </p>
                             <span
                                 className={cn(
-                                    'mt-1 inline-flex items-center gap-1 text-[10px] font-medium uppercase tracking-wide',
-                                    doctor.onDuty ? 'text-emerald-400' : 'text-sidebar-foreground/50',
+                                    'mt-1 inline-flex items-center gap-1 text-[10px] font-medium tracking-wide uppercase',
+                                    doctor.onDuty
+                                        ? 'text-emerald-400'
+                                        : 'text-sidebar-foreground/50',
                                 )}
                             >
                                 <span
                                     className={cn(
                                         'h-1.5 w-1.5 rounded-full',
-                                        doctor.onDuty ? 'bg-emerald-400' : 'bg-sidebar-foreground/50',
+                                        doctor.onDuty
+                                            ? 'bg-emerald-400'
+                                            : 'bg-sidebar-foreground/50',
                                     )}
                                 />
                                 {doctor.onDuty ? 'En service' : 'Hors service'}
@@ -194,7 +240,7 @@ setInternalActive(key);
                 <Separator className="bg-sidebar-border/50" />
 
                 {/* Scrollable nav body */}
-                <div className="flex-1 overflow-y-auto overflow-x-hidden py-2">
+                <div className="flex-1 overflow-x-hidden overflow-y-auto py-2">
                     <NavGroup
                         section={PRIMARY_NAV}
                         collapsed={collapsed}
@@ -210,7 +256,11 @@ setInternalActive(key);
                     />
                     <Separator className="my-2 bg-sidebar-border/50" />
                     <NavGroup
-                        section={{ id: 'shortcuts', title: 'Raccourcis rapides', items: SHORTCUTS }}
+                        section={{
+                            id: 'shortcuts',
+                            title: 'Raccourcis rapides',
+                            items: SHORTCUTS,
+                        }}
                         collapsed={collapsed}
                         activeKey={activeKey}
                         onNavigate={handleNavigate}
@@ -221,13 +271,21 @@ setInternalActive(key);
                 {/* Footer */}
                 <div className="border-t border-sidebar-border p-2">
                     <NavButton
-                        item={{ key: 'settings', label: 'Paramètres', icon: Settings }}
+                        item={{
+                            key: 'settings',
+                            label: 'Paramètres',
+                            icon: Settings,
+                        }}
                         active={activeKey === 'settings'}
                         collapsed={collapsed}
                         onClick={() => handleNavigate('settings')}
                     />
                     <NavButton
-                        item={{ key: 'logout', label: 'Déconnexion', icon: LogOut }}
+                        item={{
+                            key: 'logout',
+                            label: 'Déconnexion',
+                            icon: LogOut,
+                        }}
                         active={false}
                         collapsed={collapsed}
                         onClick={() => handleNavigate('logout')}
@@ -251,13 +309,19 @@ interface NavGroupProps {
     variant?: 'default' | 'shortcut';
 }
 
-function NavGroup({ section, collapsed, activeKey, onNavigate, variant = 'default' }: NavGroupProps) {
+function NavGroup({
+    section,
+    collapsed,
+    activeKey,
+    onNavigate,
+    variant = 'default',
+}: NavGroupProps) {
     return (
         <div className="px-2 py-1">
             {!collapsed && (
                 <p
                     className={cn(
-                        'mb-1 px-3 text-[10px] font-semibold uppercase tracking-wider',
+                        'mb-1 px-3 text-[10px] font-semibold tracking-wider uppercase',
                         section.tone === 'critical'
                             ? 'text-ocean-coral'
                             : 'text-sidebar-foreground/50',
@@ -291,7 +355,13 @@ interface NavButtonProps {
     variant?: 'default' | 'shortcut';
 }
 
-function NavButton({ item, active, collapsed, onClick, variant = 'default' }: NavButtonProps) {
+function NavButton({
+    item,
+    active,
+    collapsed,
+    onClick,
+    variant = 'default',
+}: NavButtonProps) {
     const { label, icon: Icon, badge, tone } = item;
     const isCritical = tone === 'critical';
     const isShortcut = variant === 'shortcut';
@@ -308,13 +378,21 @@ function NavButton({ item, active, collapsed, onClick, variant = 'default' }: Na
                 'focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:ring-offset-1 focus-visible:ring-offset-sidebar',
                 collapsed && 'justify-center px-2',
                 // Active state
-                active && !isCritical && 'bg-sidebar-accent text-sidebar-accent-foreground shadow-sm',
+                active &&
+                    !isCritical &&
+                    'bg-sidebar-accent text-sidebar-accent-foreground shadow-sm',
                 active && isCritical && 'bg-ocean-coral/15 text-ocean-coral',
                 // Idle state
-                !active && !isCritical && 'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
-                !active && isCritical && 'text-ocean-coral/80 hover:bg-ocean-coral/10 hover:text-ocean-coral',
+                !active &&
+                    !isCritical &&
+                    'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+                !active &&
+                    isCritical &&
+                    'text-ocean-coral/80 hover:bg-ocean-coral/10 hover:text-ocean-coral',
                 // Shortcut
-                isShortcut && !active && 'border border-dashed border-sidebar-border hover:border-ocean-teal/40 hover:bg-sidebar-accent',
+                isShortcut &&
+                    !active &&
+                    'border border-dashed border-sidebar-border hover:border-ocean-teal/40 hover:bg-sidebar-accent',
             )}
         >
             <Icon
@@ -324,7 +402,9 @@ function NavButton({ item, active, collapsed, onClick, variant = 'default' }: Na
                     active && isCritical && 'text-ocean-coral',
                 )}
             />
-            {!collapsed && <span className="flex-1 truncate text-left">{label}</span>}
+            {!collapsed && (
+                <span className="flex-1 truncate text-left">{label}</span>
+            )}
             {!collapsed && badge !== undefined && badge > 0 && (
                 <Badge
                     className={cn(
@@ -341,7 +421,7 @@ function NavButton({ item, active, collapsed, onClick, variant = 'default' }: Na
                 <span
                     aria-hidden
                     className={cn(
-                        'absolute right-1.5 top-1.5 h-2 w-2 rounded-full ring-2 ring-sidebar',
+                        'absolute top-1.5 right-1.5 h-2 w-2 rounded-full ring-2 ring-sidebar',
                         isCritical ? 'bg-ocean-coral' : 'bg-ocean-teal',
                     )}
                 />
@@ -350,13 +430,16 @@ function NavButton({ item, active, collapsed, onClick, variant = 'default' }: Na
     );
 
     if (!collapsed) {
-return button;
-}
+        return button;
+    }
 
     return (
         <Tooltip>
             <TooltipTrigger asChild>{button}</TooltipTrigger>
-            <TooltipContent side="right" className="flex items-center gap-2 bg-ocean-deep text-white border-ocean-teal/30">
+            <TooltipContent
+                side="right"
+                className="flex items-center gap-2 border-ocean-teal/30 bg-ocean-deep text-white"
+            >
                 <span>{label}</span>
                 {badge !== undefined && badge > 0 && (
                     <Badge

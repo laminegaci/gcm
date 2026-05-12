@@ -3,26 +3,29 @@ import { useCallback, useMemo } from 'react';
 
 import { MedicalSidebar } from '@/components/medical-sidebar';
 import { dashboard, logout } from '@/routes';
+import consultations from '@/routes/consultations';
 import patients from '@/routes/patients';
 import prescriptions from '@/routes/prescriptions';
 import { edit as editProfile } from '@/routes/profile';
 
-// Maps sidebar nav keys → real Inertia routes (where they exist).
-// Keys not listed here are visual-only for now.
+
 const ROUTE_MAP: Record<string, string> = {
     dashboard: dashboard().url,
     patients: patients.index().url,
     prescriptions: prescriptions.index().url,
+    consultations: consultations.index().url,
     settings: editProfile().url,
 };
 
 function getInitials(name: string): string {
-    return name
-        .trim()
-        .split(/\s+/)
-        .slice(0, 2)
-        .map((part) => part[0]?.toUpperCase() ?? '')
-        .join('') || '?';
+    return (
+        name
+            .trim()
+            .split(/\s+/)
+            .slice(0, 2)
+            .map((part) => part[0]?.toUpperCase() ?? '')
+            .join('') || '?'
+    );
 }
 
 interface AppSidebarProps {
@@ -38,6 +41,10 @@ export function AppSidebar({ collapsed }: AppSidebarProps = {}) {
     const activeKey = useMemo(() => {
         if (currentUrl.startsWith('/prescriptions')) {
             return 'prescriptions';
+        }
+
+        if (currentUrl.startsWith('/consultations')) {
+            return 'consultations';
         }
 
         if (currentUrl.startsWith('/patients')) {

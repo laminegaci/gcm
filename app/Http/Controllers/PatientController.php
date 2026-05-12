@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PatientRequest;
+use App\Http\Resources\ConsultationResource;
 use App\Http\Resources\PatientResource;
 use App\Models\Allergie;
+use App\Models\Consultation;
 use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -100,8 +102,15 @@ class PatientController extends Controller
 
         $patient->load(['medecin:id,name', 'contactsUrgence', 'allergies']);
 
+        $consultations = Consultation::where('patient_id', $patient->id)
+            ->with('medecin:id,name')
+            ->latest('date_consultation')
+            ->limit(5)
+            ->get();
+
         return Inertia::render('patients/show', [
             'patient' => new PatientResource($patient),
+            'consultations' => ConsultationResource::collection($consultations),
             'breadcrumbs' => [
                 ['title' => 'Patients', 'href' => route('patients.index')],
                 ['title' => trim($patient->prenom.' '.$patient->nom), 'href' => route('patients.show', $patient)],

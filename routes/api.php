@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Controllers\CertificatMedicalController;
+use App\Http\Controllers\CertificatPdfController;
+use App\Http\Controllers\ConstantesVitalesController;
+use App\Http\Controllers\ConsultationController;
+use App\Http\Controllers\DemandeAnalyseController;
+use App\Http\Controllers\DemandeAnalysePdfController;
 use App\Http\Controllers\MedicamentFavoriController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PrescriptionController;
@@ -63,11 +69,30 @@ Route::middleware('auth')->group(function () {
     Route::get('prescriptions/{prescription}/pdf', [PrescriptionPdfController::class, 'show'])
         ->name('api.prescriptions.pdf');
 
-    // Médicaments favoris
     Route::get('medicaments-favoris', [MedicamentFavoriController::class, 'index'])
         ->name('api.medicaments-favoris.index');
     Route::post('medicaments-favoris', [MedicamentFavoriController::class, 'store'])
         ->name('api.medicaments-favoris.store');
     Route::delete('medicaments-favoris/{favori}', [MedicamentFavoriController::class, 'destroy'])
         ->name('api.medicaments-favoris.destroy');
+
+    // Consultations
+    Route::get('consultations', [ConsultationController::class, 'index'])->name('api.consultations.index');
+    Route::post('consultations', [ConsultationController::class, 'store'])->name('api.consultations.store');
+    Route::get('consultations/{consultation}', [ConsultationController::class, 'show'])->name('api.consultations.show');
+    Route::put('consultations/{consultation}', [ConsultationController::class, 'update'])->name('api.consultations.update');
+    Route::delete('consultations/{consultation}', [ConsultationController::class, 'destroy'])->name('api.consultations.destroy');
+    Route::post('consultations/{consultation}/terminer', [ConsultationController::class, 'terminer'])->name('api.consultations.terminer');
+
+    Route::put('consultations/{consultation}/constantes', [ConstantesVitalesController::class, 'update'])->name('api.constantes.update');
+
+    Route::post('consultations/{consultation}/certificats', [CertificatMedicalController::class, 'store'])->name('api.consultations.certificats.store');
+    Route::put('consultations/{consultation}/certificats/{certificat}', [CertificatMedicalController::class, 'update'])->name('api.consultations.certificats.update');
+    Route::delete('consultations/{consultation}/certificats/{certificat}', [CertificatMedicalController::class, 'destroy'])->name('api.consultations.certificats.destroy');
+    Route::get('certificats/{certificat}/pdf', [CertificatPdfController::class, 'show'])->name('api.certificats.pdf');
+
+    Route::post('consultations/{consultation}/analyses', [DemandeAnalyseController::class, 'store'])->name('api.consultations.analyses.store');
+    Route::put('consultations/{consultation}/analyses/{analyse}', [DemandeAnalyseController::class, 'update'])->name('api.consultations.analyses.update');
+    Route::delete('consultations/{consultation}/analyses/{analyse}', [DemandeAnalyseController::class, 'destroy'])->name('api.consultations.analyses.destroy');
+    Route::get('analyses/{analyse}/pdf', [DemandeAnalysePdfController::class, 'show'])->name('api.analyses.pdf');
 });

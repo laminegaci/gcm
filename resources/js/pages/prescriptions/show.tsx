@@ -44,7 +44,11 @@ interface SharedPageProps {
     [key: string]: unknown;
 }
 
-const STATUT_LABELS = { active: 'Active', expiree: 'Expirée', annulee: 'Annulée' } as const;
+const STATUT_LABELS = {
+    active: 'Active',
+    expiree: 'Expirée',
+    annulee: 'Annulée',
+} as const;
 const STATUT_STYLES = {
     active: 'bg-emerald-100 text-emerald-700',
     expiree: 'bg-slate-200 text-slate-600',
@@ -52,17 +56,25 @@ const STATUT_STYLES = {
 } as const;
 
 function formatDate(d: string | null): string {
-    if (!d) return '—';
+    if (!d) {
+return '—';
+}
+
     return new Date(d).toLocaleDateString('fr-FR');
 }
 
 export default function PrescriptionShow({ prescription }: Props) {
     const p = prescription.data;
     const { auth } = usePage<SharedPageProps>().props;
-    const canEdit = !!auth?.user && (auth.user.role === 'admin' || auth.user.id === p.medecin_id);
+    const canEdit =
+        !!auth?.user &&
+        (auth.user.role === 'admin' || auth.user.id === p.medecin_id);
 
     function handleDelete() {
-        if (!confirm('Supprimer cette ordonnance ?')) return;
+        if (!confirm('Supprimer cette ordonnance ?')) {
+return;
+}
+
         router.delete(`/prescriptions/${p.id}`);
     }
 
@@ -90,12 +102,20 @@ export default function PrescriptionShow({ prescription }: Props) {
                     </Button>
                     <div className="flex flex-wrap gap-2">
                         <Button asChild variant="outline" size="sm">
-                            <a href={`/prescriptions/${p.id}/pdf`} target="_blank" rel="noopener">
+                            <a
+                                href={`/prescriptions/${p.id}/pdf`}
+                                target="_blank"
+                                rel="noopener"
+                            >
                                 <Printer className="mr-2 h-4 w-4" />
                                 Imprimer
                             </a>
                         </Button>
-                        <Button variant="outline" size="sm" onClick={handleDuplicate}>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleDuplicate}
+                        >
                             <Copy className="mr-2 h-4 w-4" />
                             Dupliquer
                         </Button>
@@ -125,12 +145,20 @@ export default function PrescriptionShow({ prescription }: Props) {
                     <CardHeader>
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <div>
-                                <CardTitle className="font-mono text-lg">{p.numero_ordonnance}</CardTitle>
+                                <CardTitle className="font-mono text-lg">
+                                    {p.numero_ordonnance}
+                                </CardTitle>
                                 <p className="text-sm text-slate-500">
-                                    {formatDate(p.date_prescription)} — Dr. {p.medecin.name}
+                                    {formatDate(p.date_prescription)} — Dr.{' '}
+                                    {p.medecin.name}
                                 </p>
                             </div>
-                            <Badge className={cn('text-sm', STATUT_STYLES[p.statut])}>
+                            <Badge
+                                className={cn(
+                                    'text-sm',
+                                    STATUT_STYLES[p.statut],
+                                )}
+                            >
                                 {STATUT_LABELS[p.statut]}
                             </Badge>
                         </div>
@@ -139,9 +167,13 @@ export default function PrescriptionShow({ prescription }: Props) {
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
                                 <Label>Patient</Label>
-                                <p className="font-medium">{p.patient.nom_complet}</p>
+                                <p className="font-medium">
+                                    {p.patient.nom_complet}
+                                </p>
                                 {p.patient.age != null && (
-                                    <p className="text-sm text-slate-500">{p.patient.age} ans</p>
+                                    <p className="text-sm text-slate-500">
+                                        {p.patient.age} ans
+                                    </p>
                                 )}
                             </div>
                             <div>
@@ -160,7 +192,9 @@ export default function PrescriptionShow({ prescription }: Props) {
                         {p.instructions_globales && (
                             <div>
                                 <Label>Instructions globales</Label>
-                                <p className="text-slate-700">{p.instructions_globales}</p>
+                                <p className="text-slate-700">
+                                    {p.instructions_globales}
+                                </p>
                             </div>
                         )}
                     </CardContent>
@@ -168,28 +202,44 @@ export default function PrescriptionShow({ prescription }: Props) {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-base">Médicaments ({p.lignes.length})</CardTitle>
+                        <CardTitle className="text-base">
+                            Médicaments ({p.lignes.length})
+                        </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
-                                <thead className="bg-ocean-sand/60 text-left text-xs uppercase text-ocean-deep/60">
+                                <thead className="bg-ocean-sand/60 text-left text-xs text-ocean-deep/60 uppercase">
                                     <tr>
-                                        <th className="px-3 py-2">Médicament</th>
+                                        <th className="px-3 py-2">
+                                            Médicament
+                                        </th>
                                         <th className="px-3 py-2">Dosage</th>
                                         <th className="px-3 py-2">Fréquence</th>
                                         <th className="px-3 py-2">Durée</th>
-                                        <th className="px-3 py-2">Instructions</th>
+                                        <th className="px-3 py-2">
+                                            Instructions
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-ocean-aqua/20">
                                     {p.lignes.map((l) => (
                                         <tr key={l.id}>
-                                            <td className="px-3 py-2 font-medium">{l.medicament_nom}</td>
-                                            <td className="px-3 py-2">{l.dosage}</td>
-                                            <td className="px-3 py-2">{l.frequence ?? '—'}</td>
-                                            <td className="px-3 py-2">{l.duree ?? '—'}</td>
-                                            <td className="px-3 py-2 text-slate-600">{l.instructions ?? '—'}</td>
+                                            <td className="px-3 py-2 font-medium">
+                                                {l.medicament_nom}
+                                            </td>
+                                            <td className="px-3 py-2">
+                                                {l.dosage}
+                                            </td>
+                                            <td className="px-3 py-2">
+                                                {l.frequence ?? '—'}
+                                            </td>
+                                            <td className="px-3 py-2">
+                                                {l.duree ?? '—'}
+                                            </td>
+                                            <td className="px-3 py-2 text-slate-600">
+                                                {l.instructions ?? '—'}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -204,6 +254,8 @@ export default function PrescriptionShow({ prescription }: Props) {
 
 function Label({ children }: { children: React.ReactNode }) {
     return (
-        <p className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-500">{children}</p>
+        <p className="mb-1 text-xs font-medium tracking-wide text-slate-500 uppercase">
+            {children}
+        </p>
     );
 }

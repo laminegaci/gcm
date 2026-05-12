@@ -1,9 +1,13 @@
 import { Head, router, useForm } from '@inertiajs/react';
 import { ArrowLeft, Plus, Star } from 'lucide-react';
-import { type FormEvent } from 'react';
+import type {FormEvent} from 'react';
 import { toast } from 'sonner';
 
-import { Ligne, PrescriptionLigneRow } from '@/components/prescription-ligne-row';
+import type {
+    Ligne} from '@/components/prescription-ligne-row';
+import {
+    PrescriptionLigneRow,
+} from '@/components/prescription-ligne-row';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -60,16 +64,28 @@ interface Props {
 }
 
 function emptyLigne(): Ligne {
-    return { medicament_nom: '', dosage: '', frequence: '', duree: '', instructions: '' };
+    return {
+        medicament_nom: '',
+        dosage: '',
+        frequence: '',
+        duree: '',
+        instructions: '',
+    };
 }
 
-export default function PrescriptionCreate({ prescription, patient, patients, favoris }: Props) {
+export default function PrescriptionCreate({
+    prescription,
+    patient,
+    patients,
+    favoris,
+}: Props) {
     const isEdit = !!prescription;
     const initial = prescription?.data;
 
     const { data, setData, post, put, processing, errors } = useForm({
         patient_id: initial?.patient_id ?? patient?.id ?? 0,
-        date_prescription: initial?.date_prescription ?? new Date().toISOString().slice(0, 10),
+        date_prescription:
+            initial?.date_prescription ?? new Date().toISOString().slice(0, 10),
         date_expiration: initial?.date_expiration ?? '',
         diagnostic: initial?.diagnostic ?? '',
         instructions_globales: initial?.instructions_globales ?? '',
@@ -105,18 +121,31 @@ export default function PrescriptionCreate({ prescription, patient, patients, fa
     function deleteLigne(idx: number) {
         if (data.lignes.length === 1) {
             toast.error('Au moins un médicament est requis.');
+
             return;
         }
-        setData('lignes', data.lignes.filter((_, i) => i !== idx));
+
+        setData(
+            'lignes',
+            data.lignes.filter((_, i) => i !== idx),
+        );
     }
 
     function submit(e: FormEvent, andPrint = false) {
         e.preventDefault();
 
-        const onSuccess = (page: { props: { prescription?: PrescriptionResource } }) => {
-            toast.success(isEdit ? 'Ordonnance mise à jour.' : 'Ordonnance créée.');
+        const onSuccess = (page: {
+            props: { prescription?: PrescriptionResource };
+        }) => {
+            toast.success(
+                isEdit ? 'Ordonnance mise à jour.' : 'Ordonnance créée.',
+            );
+
             if (andPrint && page?.props?.prescription) {
-                window.open(`/prescriptions/${page.props.prescription.data.id}/pdf`, '_blank');
+                window.open(
+                    `/prescriptions/${page.props.prescription.data.id}/pdf`,
+                    '_blank',
+                );
             }
         };
 
@@ -129,10 +158,16 @@ export default function PrescriptionCreate({ prescription, patient, patients, fa
 
     return (
         <>
-            <Head title={isEdit ? 'Modifier ordonnance' : 'Nouvelle ordonnance'} />
+            <Head
+                title={isEdit ? 'Modifier ordonnance' : 'Nouvelle ordonnance'}
+            />
 
             <div className="mx-auto max-w-4xl space-y-6 p-6">
-                <Button variant="ghost" size="sm" onClick={() => router.visit('/prescriptions')}>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => router.visit('/prescriptions')}
+                >
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Retour
                 </Button>
@@ -140,15 +175,25 @@ export default function PrescriptionCreate({ prescription, patient, patients, fa
                 <form onSubmit={(e) => submit(e, false)} className="space-y-6">
                     <Card>
                         <CardHeader>
-                            <CardTitle>{isEdit ? 'Modifier ordonnance' : 'Nouvelle ordonnance'}</CardTitle>
+                            <CardTitle>
+                                {isEdit
+                                    ? 'Modifier ordonnance'
+                                    : 'Nouvelle ordonnance'}
+                            </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <div>
                                     <Label>Patient *</Label>
                                     <Select
-                                        value={data.patient_id ? String(data.patient_id) : ''}
-                                        onValueChange={(v) => setData('patient_id', Number(v))}
+                                        value={
+                                            data.patient_id
+                                                ? String(data.patient_id)
+                                                : ''
+                                        }
+                                        onValueChange={(v) =>
+                                            setData('patient_id', Number(v))
+                                        }
                                         disabled={isEdit}
                                     >
                                         <SelectTrigger>
@@ -156,14 +201,19 @@ export default function PrescriptionCreate({ prescription, patient, patients, fa
                                         </SelectTrigger>
                                         <SelectContent>
                                             {patients.map((p) => (
-                                                <SelectItem key={p.id} value={String(p.id)}>
+                                                <SelectItem
+                                                    key={p.id}
+                                                    value={String(p.id)}
+                                                >
                                                     {p.prenom} {p.nom}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
                                     {errors.patient_id && (
-                                        <p className="mt-1 text-xs text-red-600">{errors.patient_id}</p>
+                                        <p className="mt-1 text-xs text-red-600">
+                                            {errors.patient_id}
+                                        </p>
                                     )}
                                 </div>
                                 <div>
@@ -171,7 +221,12 @@ export default function PrescriptionCreate({ prescription, patient, patients, fa
                                     <Input
                                         type="date"
                                         value={data.date_prescription}
-                                        onChange={(e) => setData('date_prescription', e.target.value)}
+                                        onChange={(e) =>
+                                            setData(
+                                                'date_prescription',
+                                                e.target.value,
+                                            )
+                                        }
                                     />
                                 </div>
                             </div>
@@ -180,7 +235,9 @@ export default function PrescriptionCreate({ prescription, patient, patients, fa
                                 <Label>Diagnostic</Label>
                                 <Input
                                     value={data.diagnostic}
-                                    onChange={(e) => setData('diagnostic', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('diagnostic', e.target.value)
+                                    }
                                     placeholder="Diagnostic (facultatif)"
                                 />
                             </div>
@@ -189,7 +246,12 @@ export default function PrescriptionCreate({ prescription, patient, patients, fa
                                 <Label>Instructions globales</Label>
                                 <Input
                                     value={data.instructions_globales}
-                                    onChange={(e) => setData('instructions_globales', e.target.value)}
+                                    onChange={(e) =>
+                                        setData(
+                                            'instructions_globales',
+                                            e.target.value,
+                                        )
+                                    }
                                     placeholder="Recommandations générales (facultatif)"
                                 />
                             </div>
@@ -202,27 +264,48 @@ export default function PrescriptionCreate({ prescription, patient, patients, fa
                             <div className="flex gap-2">
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <Button type="button" variant="outline" size="sm" disabled={favoris.length === 0}>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            disabled={favoris.length === 0}
+                                        >
                                             <Star className="mr-2 h-4 w-4" />
                                             Depuis favoris
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent className="max-h-80 overflow-auto">
-                                        <DropdownMenuLabel>Favoris (les plus utilisés)</DropdownMenuLabel>
+                                        <DropdownMenuLabel>
+                                            Favoris (les plus utilisés)
+                                        </DropdownMenuLabel>
                                         <DropdownMenuSeparator />
                                         {favoris.map((f) => (
-                                            <DropdownMenuItem key={f.id} onSelect={() => addFromFavori(f)}>
+                                            <DropdownMenuItem
+                                                key={f.id}
+                                                onSelect={() =>
+                                                    addFromFavori(f)
+                                                }
+                                            >
                                                 <div className="flex flex-col">
-                                                    <span className="font-medium">{f.nom}</span>
+                                                    <span className="font-medium">
+                                                        {f.nom}
+                                                    </span>
                                                     <span className="text-xs text-slate-500">
-                                                        {f.dosage_defaut} {f.frequence_defaut && `· ${f.frequence_defaut}`}
+                                                        {f.dosage_defaut}{' '}
+                                                        {f.frequence_defaut &&
+                                                            `· ${f.frequence_defaut}`}
                                                     </span>
                                                 </div>
                                             </DropdownMenuItem>
                                         ))}
                                     </DropdownMenuContent>
                                 </DropdownMenu>
-                                <Button type="button" variant="outline" size="sm" onClick={addLigne}>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={addLigne}
+                                >
                                     <Plus className="mr-2 h-4 w-4" />
                                     Ajouter
                                 </Button>
@@ -238,13 +321,20 @@ export default function PrescriptionCreate({ prescription, patient, patients, fa
                                     onDelete={() => deleteLigne(i)}
                                     favoris={favoris}
                                     errors={{
-                                        medicament_nom: errors[`lignes.${i}.medicament_nom` as keyof typeof errors],
-                                        dosage: errors[`lignes.${i}.dosage` as keyof typeof errors],
+                                        medicament_nom:
+                                            errors[
+                                                `lignes.${i}.medicament_nom` as keyof typeof errors
+                                            ],
+                                        dosage: errors[
+                                            `lignes.${i}.dosage` as keyof typeof errors
+                                        ],
                                     }}
                                 />
                             ))}
                             {errors.lignes && (
-                                <p className="text-sm text-red-600">{errors.lignes}</p>
+                                <p className="text-sm text-red-600">
+                                    {errors.lignes}
+                                </p>
                             )}
                         </CardContent>
                     </Card>
@@ -253,7 +343,9 @@ export default function PrescriptionCreate({ prescription, patient, patients, fa
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={(e) => submit(e as unknown as FormEvent, true)}
+                            onClick={(e) =>
+                                submit(e as unknown as FormEvent, true)
+                            }
                             disabled={processing}
                         >
                             Enregistrer et imprimer
@@ -261,7 +353,7 @@ export default function PrescriptionCreate({ prescription, patient, patients, fa
                         <Button
                             type="submit"
                             disabled={processing}
-                            className="bg-ocean-deep hover:bg-ocean-deep/90 text-white"
+                            className="bg-ocean-deep text-white hover:bg-ocean-deep/90"
                         >
                             Enregistrer
                         </Button>

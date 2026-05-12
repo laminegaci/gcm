@@ -31,13 +31,19 @@ interface Props {
     errors?: Record<string, string>;
 }
 
-export function PrescriptionLigneRow({ ligne, index, onChange, onDelete, errors }: Props) {
+export function PrescriptionLigneRow({
+    ligne,
+    index,
+    onChange,
+    onDelete,
+    errors,
+}: Props) {
     function update<K extends keyof Ligne>(key: K, value: Ligne[K]) {
         onChange({ ...ligne, [key]: value });
     }
 
     return (
-        <div className="rounded-xl border border-ocean-aqua/40 bg-white p-4 shadow-sm dark:bg-card dark:border-sidebar-border">
+        <div className="rounded-xl border border-ocean-aqua/40 bg-white p-4 shadow-sm dark:border-sidebar-border dark:bg-card">
             <div className="mb-3 flex items-center justify-between">
                 <span className="text-sm font-medium text-ocean-deep dark:text-sidebar-foreground">
                     Médicament #{index + 1}
@@ -58,12 +64,16 @@ export function PrescriptionLigneRow({ ligne, index, onChange, onDelete, errors 
                     <Label className="text-xs">Nom *</Label>
                     <Input
                         value={ligne.medicament_nom}
-                        onChange={(e) => update('medicament_nom', e.target.value)}
+                        onChange={(e) =>
+                            update('medicament_nom', e.target.value)
+                        }
                         placeholder="ex: Paracétamol"
                         required
                     />
                     {errors?.medicament_nom && (
-                        <p className="mt-1 text-xs text-red-600">{errors.medicament_nom}</p>
+                        <p className="mt-1 text-xs text-red-600">
+                            {errors.medicament_nom}
+                        </p>
                     )}
                 </div>
                 <div className="md:col-span-3">
@@ -74,7 +84,11 @@ export function PrescriptionLigneRow({ ligne, index, onChange, onDelete, errors 
                         placeholder="ex: 500mg"
                         required
                     />
-                    {errors?.dosage && <p className="mt-1 text-xs text-red-600">{errors.dosage}</p>}
+                    {errors?.dosage && (
+                        <p className="mt-1 text-xs text-red-600">
+                            {errors.dosage}
+                        </p>
+                    )}
                 </div>
                 <div className="md:col-span-2">
                     <Label className="text-xs">Fréquence</Label>

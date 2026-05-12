@@ -14,7 +14,11 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
 interface Patient {
@@ -49,11 +53,23 @@ interface Medecin {
 
 interface Props {
     patients: PaginatedPatients;
-    filters: { search?: string; sexe?: string; statut?: string; medecin_id?: number };
+    filters: {
+        search?: string;
+        sexe?: string;
+        statut?: string;
+        medecin_id?: number;
+    };
     medecins: Medecin[];
 }
 
-type ColumnKey = 'patient' | 'dossier' | 'telephone' | 'sexe' | 'age' | 'statut' | 'medecin';
+type ColumnKey =
+    | 'patient'
+    | 'dossier'
+    | 'telephone'
+    | 'sexe'
+    | 'age'
+    | 'statut'
+    | 'medecin';
 
 interface ColumnDef {
     key: ColumnKey;
@@ -93,7 +109,10 @@ function getInitials(nom: string, prenom: string): string {
     return ((prenom?.[0] ?? '') + (nom?.[0] ?? '')).toUpperCase() || '?';
 }
 
-function exportToCsv(patients: Patient[], visibleColumns: Set<ColumnKey>): void {
+function exportToCsv(
+    patients: Patient[],
+    visibleColumns: Set<ColumnKey>,
+): void {
     const labels: Record<ColumnKey, string> = {
         patient: 'Patient',
         dossier: 'N° Dossier',
@@ -104,7 +123,9 @@ function exportToCsv(patients: Patient[], visibleColumns: Set<ColumnKey>): void 
         medecin: 'Médecin traitant',
     };
 
-    const headers = ALL_COLUMNS.filter((c) => visibleColumns.has(c.key)).map((c) => labels[c.key]);
+    const headers = ALL_COLUMNS.filter((c) => visibleColumns.has(c.key)).map(
+        (c) => labels[c.key],
+    );
     const rows = patients.map((p) => {
         const row: string[] = [];
 
@@ -146,7 +167,9 @@ function exportToCsv(patients: Patient[], visibleColumns: Set<ColumnKey>): void 
         ...rows.map((r) => r.map(escapeCsvField).join(',')),
     ].join('\n');
 
-    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['\uFEFF' + csvContent], {
+        type: 'text/csv;charset=utf-8;',
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -177,7 +200,9 @@ function getSexeIcon(sexe: string | null): string {
 
 export default function PatientsIndex({ patients, filters }: Props) {
     const [search, setSearch] = useState(filters.search ?? '');
-    const [visibleColumns, setVisibleColumns] = useState<Set<ColumnKey>>(getInitialVisibleColumns);
+    const [visibleColumns, setVisibleColumns] = useState<Set<ColumnKey>>(
+        getInitialVisibleColumns,
+    );
     const [refreshing, setRefreshing] = useState(false);
 
     useEffect(() => {
@@ -193,7 +218,12 @@ export default function PatientsIndex({ patients, filters }: Props) {
             router.get(
                 '/patients',
                 { search: search || undefined },
-                { preserveState: true, preserveScroll: true, replace: true, only: ['patients', 'filters'] },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                    replace: true,
+                    only: ['patients', 'filters'],
+                },
             );
         }, 300);
 
@@ -229,7 +259,8 @@ export default function PatientsIndex({ patients, filters }: Props) {
         });
     }
 
-    const colSpan = ALL_COLUMNS.filter((c) => visibleColumns.has(c.key)).length + 1;
+    const colSpan =
+        ALL_COLUMNS.filter((c) => visibleColumns.has(c.key)).length + 1;
 
     return (
         <>
@@ -239,12 +270,18 @@ export default function PatientsIndex({ patients, filters }: Props) {
                 {/* Header */}
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-2xl font-semibold text-ocean-deep dark:text-sidebar-foreground">Patients</h1>
+                        <h1 className="text-2xl font-semibold text-ocean-deep dark:text-sidebar-foreground">
+                            Patients
+                        </h1>
                         <p className="text-sm text-slate-500 dark:text-sidebar-foreground/60">
-                            {patients.meta.total} dossier{patients.meta.total > 1 ? 's' : ''}
+                            {patients.meta.total} dossier
+                            {patients.meta.total > 1 ? 's' : ''}
                         </p>
                     </div>
-                    <Button asChild className="bg-ocean-deep hover:bg-ocean-deep/90 text-white shadow-sm shadow-ocean-deep/20">
+                    <Button
+                        asChild
+                        className="bg-ocean-deep text-white shadow-sm shadow-ocean-deep/20 hover:bg-ocean-deep/90"
+                    >
                         <Link href="/patients/create">
                             <svg
                                 className="mr-2 h-4 w-4"
@@ -268,7 +305,7 @@ export default function PatientsIndex({ patients, filters }: Props) {
                 <div className="flex flex-wrap items-center gap-3">
                     {/* Search */}
                     <div className="relative max-w-md flex-1">
-                        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ocean-teal/50" />
+                        <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ocean-teal/50" />
                         <Input
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
@@ -290,7 +327,10 @@ export default function PatientsIndex({ patients, filters }: Props) {
                                     aria-label="Actualiser"
                                 >
                                     <RefreshCw
-                                        className={cn('h-4 w-4', refreshing && 'animate-spin')}
+                                        className={cn(
+                                            'h-4 w-4',
+                                            refreshing && 'animate-spin',
+                                        )}
                                     />
                                 </Button>
                             </TooltipTrigger>
@@ -302,12 +342,18 @@ export default function PatientsIndex({ patients, filters }: Props) {
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <DropdownMenuTrigger asChild>
-                                        <Button variant="outline" size="icon" aria-label="Colonnes">
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            aria-label="Colonnes"
+                                        >
                                             <Columns3 className="h-4 w-4" />
                                         </Button>
                                     </DropdownMenuTrigger>
                                 </TooltipTrigger>
-                                <TooltipContent>Afficher / masquer les colonnes</TooltipContent>
+                                <TooltipContent>
+                                    Afficher / masquer les colonnes
+                                </TooltipContent>
                             </Tooltip>
                             <DropdownMenuContent align="end" className="w-56">
                                 <DropdownMenuLabel>Colonnes</DropdownMenuLabel>
@@ -316,7 +362,9 @@ export default function PatientsIndex({ patients, filters }: Props) {
                                     <DropdownMenuCheckboxItem
                                         key={col.key}
                                         checked={visibleColumns.has(col.key)}
-                                        onCheckedChange={() => toggleColumn(col.key)}
+                                        onCheckedChange={() =>
+                                            toggleColumn(col.key)
+                                        }
                                         disabled={col.always}
                                     >
                                         {col.label}
@@ -343,20 +391,25 @@ export default function PatientsIndex({ patients, filters }: Props) {
                 </div>
 
                 {/* Table */}
-                <div className="overflow-hidden rounded-2xl border border-ocean-aqua/30 bg-white shadow-sm dark:bg-card dark:border-sidebar-border">
+                <div className="overflow-hidden rounded-2xl border border-ocean-aqua/30 bg-white shadow-sm dark:border-sidebar-border dark:bg-card">
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
-                            <thead className="bg-ocean-sand/60 text-left text-xs uppercase text-ocean-deep/60 dark:bg-sidebar-accent dark:text-sidebar-foreground/60">
+                            <thead className="bg-ocean-sand/60 text-left text-xs text-ocean-deep/60 uppercase dark:bg-sidebar-accent dark:text-sidebar-foreground/60">
                                 <tr>
                                     {ALL_COLUMNS.map(
                                         (col) =>
                                             visibleColumns.has(col.key) && (
-                                                <th key={col.key} className="px-4 py-3.5 font-medium">
+                                                <th
+                                                    key={col.key}
+                                                    className="px-4 py-3.5 font-medium"
+                                                >
                                                     {col.label}
                                                 </th>
                                             ),
                                     )}
-                                    <th className="px-4 py-3.5 text-right font-medium">Actions</th>
+                                    <th className="px-4 py-3.5 text-right font-medium">
+                                        Actions
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-ocean-aqua/20 dark:divide-sidebar-border">
@@ -372,14 +425,18 @@ export default function PatientsIndex({ patients, filters }: Props) {
                                                     Aucun patient trouvé
                                                 </p>
                                                 <p className="text-sm text-ocean-deep/30 dark:text-sidebar-foreground/40">
-                                                    Essayez de modifier votre recherche
+                                                    Essayez de modifier votre
+                                                    recherche
                                                 </p>
                                             </div>
                                         </td>
                                     </tr>
                                 )}
                                 {patients.data.map((p) => (
-                                    <tr key={p.id} className="transition-colors hover:bg-ocean-aqua/20 dark:hover:bg-sidebar-accent">
+                                    <tr
+                                        key={p.id}
+                                        className="transition-colors hover:bg-ocean-aqua/20 dark:hover:bg-sidebar-accent"
+                                    >
                                         {visibleColumns.has('patient') && (
                                             <td className="px-4 py-3">
                                                 <Link
@@ -388,10 +445,20 @@ export default function PatientsIndex({ patients, filters }: Props) {
                                                 >
                                                     <Avatar className="h-9 w-9 ring-1 ring-ocean-aqua/50">
                                                         {p.photo_url && (
-                                                            <AvatarImage src={p.photo_url} alt={p.nom_complet} />
+                                                            <AvatarImage
+                                                                src={
+                                                                    p.photo_url
+                                                                }
+                                                                alt={
+                                                                    p.nom_complet
+                                                                }
+                                                            />
                                                         )}
                                                         <AvatarFallback className="bg-gradient-to-br from-ocean-teal to-ocean-deep text-xs font-medium text-white">
-                                                            {getInitials(p.nom, p.prenom)}
+                                                            {getInitials(
+                                                                p.nom,
+                                                                p.prenom,
+                                                            )}
                                                         </AvatarFallback>
                                                     </Avatar>
                                                     <div>
@@ -399,7 +466,9 @@ export default function PatientsIndex({ patients, filters }: Props) {
                                                             {p.nom_complet}
                                                         </span>
                                                         {p.cin && (
-                                                            <p className="text-xs text-slate-400 dark:text-sidebar-foreground/60">{p.cin}</p>
+                                                            <p className="text-xs text-slate-400 dark:text-sidebar-foreground/60">
+                                                                {p.cin}
+                                                            </p>
                                                         )}
                                                     </div>
                                                 </Link>
@@ -422,7 +491,9 @@ export default function PatientsIndex({ patients, filters }: Props) {
                                                         {p.telephone}
                                                     </a>
                                                 ) : (
-                                                    <span className="text-ocean-aqua/60">—</span>
+                                                    <span className="text-ocean-aqua/60">
+                                                        —
+                                                    </span>
                                                 )}
                                             </td>
                                         )}
@@ -433,7 +504,9 @@ export default function PatientsIndex({ patients, filters }: Props) {
                                                         {getSexeIcon(p.sexe)}
                                                     </span>
                                                 ) : (
-                                                    <span className="text-ocean-aqua/60">—</span>
+                                                    <span className="text-ocean-aqua/60">
+                                                        —
+                                                    </span>
                                                 )}
                                             </td>
                                         )}
@@ -442,34 +515,52 @@ export default function PatientsIndex({ patients, filters }: Props) {
                                                 {p.age != null ? (
                                                     <span>{p.age} ans</span>
                                                 ) : (
-                                                    <span className="text-ocean-aqua/60">—</span>
+                                                    <span className="text-ocean-aqua/60">
+                                                        —
+                                                    </span>
                                                 )}
                                             </td>
                                         )}
                                         {visibleColumns.has('statut') && (
                                             <td className="px-4 py-3">
-                                                <span className={cn(
-                                                    'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
-                                                    p.statut === 'actif'
-                                                        ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20 dark:bg-emerald-950/30 dark:text-emerald-400 dark:ring-emerald-600/30'
-                                                        : 'bg-ocean-aqua/30 text-ocean-deep/60 ring-1 ring-ocean-aqua/40 dark:bg-sidebar-accent dark:text-sidebar-foreground/50',
-                                                )}>
-                                                    {p.statut === 'actif' ? 'Actif' : 'Inactif'}
+                                                <span
+                                                    className={cn(
+                                                        'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
+                                                        p.statut === 'actif'
+                                                            ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20 dark:bg-emerald-950/30 dark:text-emerald-400 dark:ring-emerald-600/30'
+                                                            : 'bg-ocean-aqua/30 text-ocean-deep/60 ring-1 ring-ocean-aqua/40 dark:bg-sidebar-accent dark:text-sidebar-foreground/50',
+                                                    )}
+                                                >
+                                                    {p.statut === 'actif'
+                                                        ? 'Actif'
+                                                        : 'Inactif'}
                                                 </span>
                                             </td>
                                         )}
                                         {visibleColumns.has('medecin') && (
                                             <td className="px-4 py-3 text-slate-600 dark:text-sidebar-foreground/70">
                                                 {p.medecin ? (
-                                                    <span className="text-xs">{p.medecin.name}</span>
+                                                    <span className="text-xs">
+                                                        {p.medecin.name}
+                                                    </span>
                                                 ) : (
-                                                    <span className="text-ocean-aqua/60">—</span>
+                                                    <span className="text-ocean-aqua/60">
+                                                        —
+                                                    </span>
                                                 )}
                                             </td>
                                         )}
                                         <td className="px-4 py-3 text-right">
-                                            <Button asChild variant="ghost" size="sm">
-                                                <Link href={`/patients/${p.id}`}>Voir</Link>
+                                            <Button
+                                                asChild
+                                                variant="ghost"
+                                                size="sm"
+                                            >
+                                                <Link
+                                                    href={`/patients/${p.id}`}
+                                                >
+                                                    Voir
+                                                </Link>
                                             </Button>
                                         </td>
                                     </tr>
@@ -483,7 +574,8 @@ export default function PatientsIndex({ patients, filters }: Props) {
                 {patients.meta.links && patients.meta.links.length > 3 && (
                     <div className="flex flex-wrap items-center justify-between gap-4">
                         <p className="text-sm text-slate-500 dark:text-sidebar-foreground/60">
-                            Page {patients.meta.current_page} sur {patients.meta.last_page}
+                            Page {patients.meta.current_page} sur{' '}
+                            {patients.meta.last_page}
                         </p>
                         <div className="flex flex-wrap gap-1">
                             {patients.meta.links.map((link, i) => (
@@ -501,10 +593,13 @@ export default function PatientsIndex({ patients, filters }: Props) {
                                         'min-w-9 rounded-lg border px-3 py-1.5 text-sm transition-all',
                                         link.active
                                             ? 'border-ocean-teal bg-ocean-deep text-white shadow-sm'
-                                            : 'border-ocean-aqua/40 bg-white text-ocean-deep/70 hover:border-ocean-teal/50 hover:bg-ocean-aqua/20 dark:bg-card dark:text-sidebar-foreground/70 dark:border-sidebar-border',
-                                        !link.url && 'cursor-not-allowed opacity-40',
+                                            : 'border-ocean-aqua/40 bg-white text-ocean-deep/70 hover:border-ocean-teal/50 hover:bg-ocean-aqua/20 dark:border-sidebar-border dark:bg-card dark:text-sidebar-foreground/70',
+                                        !link.url &&
+                                            'cursor-not-allowed opacity-40',
                                     )}
-                                    dangerouslySetInnerHTML={{ __html: link.label }}
+                                    dangerouslySetInnerHTML={{
+                                        __html: link.label,
+                                    }}
                                 />
                             ))}
                         </div>

@@ -7,8 +7,6 @@ use App\Http\Resources\PrescriptionResource;
 use App\Models\MedicamentFavori;
 use App\Models\Patient;
 use App\Models\Prescription;
-use App\Models\PrescriptionLigne;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
