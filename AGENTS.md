@@ -1,119 +1,85 @@
-# AGENTS.md - Repository Guidelines
+# AGENTS.md
+
+## Project
+
+Medical clinic management system (GCM = Gestion Cabinet Médical). Built on the Laravel React starter kit with Inertia.js — **no REST API**, all pages are server-rendered via Inertia.
 
 ## Tech Stack
 
-- **Backend**: Laravel 13 (PHP 8.3+), Inertia.js, Fortify
-- **Frontend**: React 19, TypeScript, Tailwind CSS v4, shadcn/ui, Radix UI
-- **Build**: Vite, pnpm workspaces
-- **Testing**: PHPUnit
+- **Backend**: Laravel 13 (PHP 8.3+), Inertia.js v3, Fortify, Wayfinder, dompdf
+- **Frontend**: React 19, TypeScript, Tailwind CSS v4 (Ocean Breeze theme), shadcn/ui (New York), sonner (toasts)
+- **Build**: Vite 8, pnpm
+
+## Domain
+
+- **Patient** — soft deletes, UUID, `dossier_number` (`DOS-YYYY-NNNNNN`), linked to a `medecin` (User)
+- **Prescription** — soft deletes, UUID, `numero_ordonnance` (`ORD-YYYY-NNNNN`), has ordered `PrescriptionLigne` items
+- **MedicamentFavori** — per-doctor favorites tracked by `usage_count`
+- **User roles** — `admin`, `medecin`, `secretaire`; authorization via policies (`PatientPolicy`, `PrescriptionPolicy`)
+- **PDF** — dompdf renders `resources/views/pdf/ordonnance.blade.php` at A5 portrait
+- **Theme** — Ocean Breeze palette (`ocean-deep`, `ocean-teal`, `ocean-aqua`, `ocean-seafoam`, `ocean-sand`, `ocean-coral`) defined in `resources/css/app.css`
+- **Clinic config** — `config/clinique.php` reads `CLINIQUE_NOM`, `CLINIQUE_ADRESSE`, `CLINIQUE_TELEPHONE` from env
 
 ## Commands
 
-### Development
-
 ```bash
-composer run dev          # Start dev server (Laravel + queue + logs + Vite)
-npm run dev               # Start Vite dev server only
+composer run setup         # Full setup: composer install → .env → key:generate → migrate → npm i → build
+composer run dev           # Full dev stack (Laravel + queue + logs + Vite via concurrently)
+npm run dev                # Vite dev server only
+npm run build              # Production build (Vite)
+npm run build:ssr          # SSR build
+composer run lint          # Pint auto-fix
+composer run lint:check    # Pint check only
+npm run lint               # ESLint auto-fix
+npm run lint:check         # ESLint check only
+npm run format             # Prettier auto-fix
+npm run format:check       # Prettier check only
+npm run types:check        # tsc --noEmit
+composer run test          # Full: config:clear → lint → PHPUnit
+composer run ci:check      # CI: lint → format → types → test
+vendor/bin/phpunit --filter test_method_name
 ```
 
-### Building
+## Conventions
 
-```bash
-npm run build             # Production build
-npm run build:ssr         # SSR build
-```
+### Auto-generated (do not modify)
+`resources/js/components/ui/*`, `resources/js/routes/**`, `resources/js/wayfinder/**`, `resources/js/actions/**`
 
-### Linting & Formatting
+### Routing
+- `Route::inertia()` for pages without controller logic
+- Controllers namespaced by domain (`Settings/`, etc.)
+- Route names use kebab-case
+- Wayfinger generates type-safe helpers: `to_route()` (PHP) / `@/routes` (TS)
+- Breadcrumbs passed as page prop from every controller
 
-```bash
-# PHP
-composer run lint         # Run Pint (auto-fix)
-composer run lint:check   # Run Pint (check only)
+### Auth
+- Fortify: login, registration, password reset, email verification, 2FA
+- Home after auth: `/dashboard`
+- Tests use SQLite `:memory:` (see `phpunit.xml` for all test env vars)
 
-# TypeScript/React
-npm run lint              # ESLint (auto-fix)
-npm run lint:check        # ESLint (check only)
-npm run format            # Prettier (auto-fix)
-npm run format:check      # Prettier (check only)
-npm run types:check       # TypeScript type checking
-```
+### Layout resolution (`resources/js/app.tsx`)
+| Page pattern | Layout |
+|---|---|
+| `welcome` | none |
+| `auth/*` | `AuthLayout` |
+| `settings/*` | `[AppLayout, SettingsLayout]` |
+| everything else | `AppLayout` |
 
-### Testing
-
-```bash
-composer run test         # Full test suite (config clear + lint + PHPUnit)
-
-# Run a single PHPUnit test file
-vendor/bin/phpunit tests/Feature/DashboardTest.php
-
-# Run a single test method (filter by name)
-vendor/bin/phpunit --filter test_authenticated_users_can_visit_the_dashboard
-
-# Run only Unit or Feature tests
-vendor/bin/phpunit --testsuite Unit
-vendor/bin/phpunit --testsuite Feature
-```
-
-## Code Style
-
-### TypeScript/React
-
-- **Imports**: Use `type` imports for types only (`import type { Foo }`). Prefer top-level type specifiers
-- **Import order**: Built-in → External → Internal (`@/`) → Parent → Sibling → Index (alphabetical, case-insensitive)
-- **Path alias**: Use `@/` for `resources/js/` (e.g., `import { cn } from "@/lib/utils"`)
-- **Naming**: `camelCase` for functions/variables, `PascalCase` for components/types, `kebab-case` for filenames
-- **React 19**: Uses React Compiler (babel-plugin-react-compiler); no `useMemo`/`useCallback` needed
-- **Components**: Use `function` declarations, not arrow functions
-- **Classes**: Use `cn()` utility from `@/lib/utils` for conditional Tailwind classes
-- **Variants**: Use `cva` (class-variance-authority) for component variants
-- **Curly braces**: Required on all control flow (`curly: ['error', 'all']`)
-- **Brace style**: 1tbs (K&R style)
-- **Blank lines**: Required around control statements (`if`, `return`, `for`, `while`, `try`, etc.)
-- **Quotes**: Single quotes, semicolons required, 4-space tabs, 80-char print width
-- **Explicit `any`**: Allowed (`@typescript-eslint/no-explicit-any` is off)
+### React / TypeScript
+- React Compiler enabled — **do not use `useMemo`/`useCallback`**
+- `function` declarations for components, not arrow functions
+- `@/` maps to `resources/js/`
+- `cn()` from `@/lib/utils` for conditional classes
+- `cva` for component variants
 
 ### PHP
+- `#[Fillable]` / `#[Hidden]` attributes on models (not protected properties)
+- Form Request classes in `app/Http/Requests/` for validation
+- API Resources in `app/Http/Resources/` for serialization
+- Flash: `Inertia::flash('toast', ['type' => 'success', 'message' => '...'])`
 
-- **Preset**: Laravel Pint (Laravel style)
-- **Naming**: `camelCase` for methods/variables, `PascalCase` for classes
-- **Controllers**: Extend `App\Http\Controllers\Controller`; use typed request/responses
-- **Models**: Use `#[Fillable]` and `#[Hidden]` attributes instead of protected properties
-- **Type hints**: Use PHP 8.3+ typed properties and return types
-- **Requests**: Form request classes for validation, placed in `app/Http/Requests/`
-- **Routing**: Use `Route::inertia()` for Inertia pages; route names use kebab-case
-- **Flash messages**: Use `Inertia::flash('toast', {...})` for notifications
-
-### Error Handling
-
-- PHP: Use Form Request classes for validation errors; Laravel handles response automatically
-- TypeScript: Prefer `unknown` in catch blocks; explicit error handling with Inertia flash messages
-
-## Project Structure
-
-```
-app/                          # PHP backend
-  Actions/                    # Action classes (e.g., Fortify actions)
-  Concerns/                   # Reusable traits
-  Http/Controllers/           # Controllers (namespaced by domain)
-  Http/Middleware/            # Middleware
-  Http/Requests/              # Form request validation
-  Models/                     # Eloquent models
-resources/js/                 # React frontend
-  components/                 # Shared React components
-    ui/                       # shadcn/ui primitives (DO NOT MODIFY)
-  hooks/                      # Custom React hooks
-  layouts/                    # Inertia page layouts
-  lib/                        # Utilities (e.g., cn helper)
-  pages/                      # Inertia pages (route-matched)
-routes/                       # Laravel route definitions
-tests/
-  Feature/                    # Feature tests
-  Unit/                       # Unit tests
-```
-
-## Important Notes
-
-- **Do not modify** files in `resources/js/components/ui/*` or `resources/js/routes/**` (auto-generated)
-- ESLint ignores: `vendor`, `node_modules`, `public`, `bootstrap/ssr`, `resources/js/actions/**`, `resources/js/components/ui/*`, `resources/js/routes/**`, `resources/js/wayfinder/**`
-- Wayfinder auto-generates type-safe route/action helpers at `@/routes`
-- Use `to_route()` helper in PHP for redirects by route name
+## Quirks
+- `.npmrc` sets `ignore-scripts=true` — npm lifecycle scripts skip on install
+- `pnpm-workspace.yaml` hoists `@inertiajs/core` publicly
+- SSR enabled at `http://127.0.0.1:13714` (`config/inertia.php`)
+- Soft deletes on Patient and Prescription — factor into queries
