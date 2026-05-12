@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 #[Fillable([
@@ -33,8 +34,15 @@ class Prescription extends Model
         static::creating(function (Prescription $p) {
             $p->uuid ??= (string) Str::uuid();
             $p->numero_ordonnance ??= self::generateNumero();
-            $p->date_prescription ??= now()->toDateString();
-            $p->date_expiration ??= now()->parse($p->date_prescription)->addMonths(3)->toDateString();
+            $p->date_prescription ??= Carbon::now()->toDateString();
+
+            if (! $p->date_expiration) {
+                $base = $p->date_prescription instanceof \DateTimeInterface
+                    ? Carbon::instance($p->date_prescription)
+                    : Carbon::parse((string) $p->date_prescription);
+                $p->date_expiration = $base->addMonths(3)->toDateString();
+            }
+
             $p->statut ??= 'active';
         });
     }

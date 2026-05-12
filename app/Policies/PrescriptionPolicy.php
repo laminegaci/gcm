@@ -19,12 +19,14 @@ class PrescriptionPolicy
 
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'medecin'], true);
+        return in_array($user->role, ['admin', 'medecin', 'secretaire'], true);
     }
 
     public function update(User $user, Prescription $prescription): bool
     {
-        return $user->role === 'admin' || $user->id === $prescription->medecin_id;
+        return $user->role === 'admin'
+            || $user->id === $prescription->medecin_id
+            || $user->role === 'secretaire';
     }
 
     public function delete(User $user, Prescription $prescription): bool
